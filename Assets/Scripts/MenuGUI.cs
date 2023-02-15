@@ -45,10 +45,5 @@ public class MenuGUI : MonoBehaviour
             nm.StartServer();
             started = true;
         }
-        else if (GUILayout.Button("Start Host"))
-        {
-            nm.StartHost();
-            started = true;
-        }
     }
 }
