@@ -20,7 +20,6 @@ public class Player : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
-
             MoveClient();
             CheckDeathClient();
         }
@@ -35,19 +34,15 @@ public class Player : NetworkBehaviour
     void CheckDeathClient()
     {
         if (transform.position.y <= deathHeight)
-        {
             RespawnClient();
-            Debug.Log("DEATH");
-        }
-
     }
     void RespawnClient(bool _addFall = true)
     {
         if (SpawnManager.Instance)
             transform.position = SpawnManager.Instance.GetSpawnPoint();
         RefreshPositionServerRpc(transform.position);
-        //if (_addFall)
-        //    AddFallServerRpc();
+        if (_addFall)
+            AddFallServerRpc();
     }
     [ServerRpc]
     void RefreshPositionServerRpc(Vector3 _position)
@@ -55,6 +50,5 @@ public class Player : NetworkBehaviour
         transform.position = _position;
         syncedPosition.Value = _position;
     }
-    [ServerRpc]
-    void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(NetworkObjectId);
+    [ServerRpc] void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(NetworkObjectId);
 }

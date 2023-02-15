@@ -10,17 +10,11 @@ public class DeathBoard : NetworkSingleton<DeathBoard>
     public void AddFallServer(ulong _playerID)
     {
         AddFall(_playerID);
-        //AddFallClientRpc(_playerID);
+        AddFallClientRpc(_playerID);
     }
-    [ClientRpc]
-    void AddFallClientRpc(ulong _playerID)
-    {
-        Debug.Log("ADD FALL SERVER");
-        AddFall(_playerID);
-    }
+    [ClientRpc] void AddFallClientRpc(ulong _playerID) => AddFall(_playerID);
     void AddFall(ulong _playerID)
     {
-        Debug.Log("AddFall_Internal");
         if (!deaths.ContainsKey(_playerID))
             deaths.Add(_playerID, 0);
         deaths[_playerID]++;
