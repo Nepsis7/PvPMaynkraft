@@ -4,32 +4,30 @@ using UnityEngine;
 using Unity.Netcode;
 using System.Globalization;
 
-public class DeathBoard : NetworkBehaviour
+public class DeathBoard : NetworkSingleton<DeathBoard>
 {
     Dictionary<ulong, int> deaths = new Dictionary<ulong, int>();
-    public void AddFall(ulong _playerID) { if (IsOwner) AddFallServerRpc(_playerID); }
-    [ServerRpc]
-    void AddFallServerRpc(ulong _playerID)
+    public void AddFallServer(ulong _playerID)
     {
-        //transform.position = Vector3.one * 3;
-        AddFall_Internal(_playerID);
-        RefreshDeathsClientRpc(_playerID);
+        AddFall(_playerID);
+        //AddFallClientRpc(_playerID);
     }
     [ClientRpc]
-    void RefreshDeathsClientRpc(ulong _playerID)
+    void AddFallClientRpc(ulong _playerID)
     {
-        AddFall_Internal(_playerID);
+        Debug.Log("ADD FALL SERVER");
+        AddFall(_playerID);
     }
-    void AddFall_Internal(ulong _playerID)
+    void AddFall(ulong _playerID)
     {
+        Debug.Log("AddFall_Internal");
         if (!deaths.ContainsKey(_playerID))
             deaths.Add(_playerID, 0);
         deaths[_playerID]++;
     }
     private void OnGUI()
     {
-        if (IsOwner)
-            foreach (KeyValuePair<ulong, int> _deathCount in deaths)
-                GUILayout.Label($"Player {_deathCount.Key} : {_deathCount.Value} deaths");
+        foreach (KeyValuePair<ulong, int> _deathCount in deaths)
+            GUILayout.Label($"Player {_deathCount.Key} : {_deathCount.Value} deaths");
     }
 }

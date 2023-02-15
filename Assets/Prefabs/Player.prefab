@@ -12,11 +12,9 @@ GameObject:
   - component: {fileID: 4822195438732570867}
   - component: {fileID: 4822195438732570864}
   - component: {fileID: 4822195438732570865}
-  - component: {fileID: 4822195438732570830}
-  - component: {fileID: -3151917329953359520}
-  - component: {fileID: 8422034352401741720}
-  - component: {fileID: 8837812310901930945}
-  - component: {fileID: 7057517407499451150}
+  - component: {fileID: 5867940736157816443}
+  - component: {fileID: 7561642509712940651}
+  - component: {fileID: 8469858392537060091}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -103,7 +101,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4822195438732570830
+--- !u!114 &5867940736157816443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,32 +117,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &-3151917329953359520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4822195438732570831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 325dc448911a45d44b084e78350ad4e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8422034352401741720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4822195438732570831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb80aa987e461d0449296955ea4be738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deathHeight: -1
---- !u!54 &8837812310901930945
+--- !u!54 &7561642509712940651
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,7 +133,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &7057517407499451150
+--- !u!114 &8469858392537060091
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,6 +142,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4822195438732570831}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aa4f431aabd6ef4398b0887bbbab827, type: 3}
+  m_Script: {fileID: 11500000, guid: cb80aa987e461d0449296955ea4be738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathHeight: -1

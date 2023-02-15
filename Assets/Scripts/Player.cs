@@ -1,58 +1,60 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody), typeof(DeathBoard))]
+[RequireComponent(typeof(Rigidbody))]
 public class Player : NetworkBehaviour
 {
     [SerializeField] float deathHeight = -1f;
+    NetworkVariable<Vector3> syncedPosition = new NetworkVariable<Vector3>(Vector3.zero);
     Rigidbody rb = null;
-    DeathBoard deathBoard = null;
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        deathBoard = GetComponent<DeathBoard>();
-        Respawn();
+    }
+    private void Start()
+    {
+        if (IsClient)
+            RespawnClient(false);
     }
     void Update()
     {
-        if (IsOwner)
-            Move();
-        CheckDeathClientRpc();
+        if (IsLocalPlayer)
+        {
+
+            MoveClient();
+            CheckDeathClient();
+        }
+        else if (IsClient)
+            transform.position = syncedPosition.Value;
     }
-    void Move()
+    void MoveClient()
     {
         rb.position += Time.deltaTime * 2 * (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal"));
-        RefreshMovementServerRpc(transform.position);
+        RefreshPositionServerRpc(transform.position);
     }
-    [ClientRpc]
-    void CheckDeathClientRpc()
+    void CheckDeathClient()
     {
-        if (IsOwner && transform.position.y <= deathHeight)
+        if (transform.position.y <= deathHeight)
         {
-            Respawn();
-            deathBoard.AddFall(NetworkObjectId);
+            RespawnClient();
+            Debug.Log("DEATH");
         }
 
     }
-    void Respawn()
+    void RespawnClient(bool _addFall = true)
     {
         if (SpawnManager.Instance)
             transform.position = SpawnManager.Instance.GetSpawnPoint();
+        RefreshPositionServerRpc(transform.position);
+        //if (_addFall)
+        //    AddFallServerRpc();
     }
     [ServerRpc]
-    void RefreshMovementServerRpc(Vector3 _position)
+    void RefreshPositionServerRpc(Vector3 _position)
     {
-        rb.position = _position;
-        RefreshMovementClientRpc(_position);
+        transform.position = _position;
+        syncedPosition.Value = _position;
     }
-    [ClientRpc]
-    void RefreshMovementClientRpc(Vector3 _position)
-    {
-        if (IsOwner)
-            return;
-        rb.position = _position;
-    }
+    [ServerRpc]
+    void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(NetworkObjectId);
 }
