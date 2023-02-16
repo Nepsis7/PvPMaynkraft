@@ -25,20 +25,42 @@ public partial class Player : NetworkBehaviour
     }
     void HandleCam() //cam position, cam rotation & player rotation
     {
-        transform.eulerAngles += Input.GetAxis(inputSettings.YawAxis) * sensitivity.x * Vector3.up;
+        transform.eulerAngles += Input.GetAxis(inputSettings.YawAxis) * movementSettings.Sensitivity.x * Vector3.up;
         Camera _cam = Camera.main;
 
-        camPitch += -Input.GetAxis(inputSettings.PitchAxis) * sensitivity.y;
-        camPitch = camPitch < camPitchMinMax.x ? camPitchMinMax.x : camPitch;
-        camPitch = camPitch > camPitchMinMax.y ? camPitchMinMax.y : camPitch;
+        camPitch += -Input.GetAxis(inputSettings.PitchAxis) * movementSettings.Sensitivity.y;
+        camPitch = camPitch < movementSettings.CamPitchMinMax.x ? movementSettings.CamPitchMinMax.x : camPitch;
+        camPitch = camPitch > movementSettings.CamPitchMinMax.y ? movementSettings.CamPitchMinMax.y : camPitch;
         _cam.transform.localEulerAngles = Vector3.right * camPitch;
         RefreshRotationServerRpc(transform.eulerAngles.y);
     }
     void Move()
     {
-        rb.position += Time.deltaTime * speed * (isGrounded ? 1 : inAirSpeedFactor) * (transform.forward * Input.GetAxis(inputSettings.ForwardAxis) + transform.right * Input.GetAxis(inputSettings.StrafeAxis));
+        rb.position +=
+            Time.deltaTime * //dt
+            movementSettings.Speed * //speed
+            Move_InAirFactor * //slower if in the air
+            Move_SprintingFactor * //faster if sprinting
+            Move_FS; //move direction and distance
+        TryJump();
         RefreshPositionServerRpc(transform.position);
     }
+    #region Move() subAccessors
+    float Move_InAirFactor => isGrounded ? 1 : movementSettings.InAirSpeedFactor;
+    float Move_SprintingFactor => Input.GetAxis(inputSettings.SprintAxis) > 0 ? movementSettings.SprintSpeedFactor : 1;
+    Vector3 Move_FS => Move_Forward + Move_Strafe;
+    Vector3 Move_Forward => transform.forward * Input.GetAxis(inputSettings.ForwardAxis);
+    Vector3 Move_Strafe => transform.right * Input.GetAxis(inputSettings.StrafeAxis);
+    #endregion Move() subAccessors
+    void TryJump()
+    {
+        if (!canJump || !isGrounded || Input.GetAxis(inputSettings.JumpAxis) == 0)
+            return;
+        canJump = false;
+        rb.AddForce(Vector3.up * movementSettings.JumpForce, ForceMode.VelocityChange);
+        Invoke(nameof(AllowJumping), movementSettings.JumpDelay);
+    }
+    void AllowJumping() => canJump = true;
     void CheckDeath()
     {
         if (transform.position.y <= deathHeight)
@@ -55,7 +77,7 @@ public partial class Player : NetworkBehaviour
     }
     void TryHitPlayers()
     {
-        if (!camSocket || !cam || !Input.GetKeyDown(inputSettings.HitKey))
+        if (!camSocket || !cam || Input.GetAxis(inputSettings.HitAxis) == 0)
             return;
         Vector3 _rayStartPos = camSocket.position + cam.transform.forward * hitRayCastSettings.ForwardOffset;
         Vector3 _rayDirection = cam.transform.forward;

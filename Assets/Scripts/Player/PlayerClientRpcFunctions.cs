@@ -8,9 +8,9 @@ public partial class Player : NetworkBehaviour
     {
         if (IsLocalPlayer && canGetHit)
         {
-            rb.AddForce(4 * new Vector3(_dirNormalized.x * kbMultipliers.Horizontal, _dirNormalized.y * kbMultipliers.Vertical, _dirNormalized.z * kbMultipliers.Horizontal), ForceMode.Impulse); ;
+            rb.AddForce(4 * new Vector3(_dirNormalized.x * movementSettings.KbMultipliers.Horizontal, _dirNormalized.y * movementSettings.KbMultipliers.Vertical, _dirNormalized.z * movementSettings.KbMultipliers.Horizontal), ForceMode.Impulse);
             canGetHit = false;
-            Invoke("AllowHits", hitDelay);
+            Invoke(nameof(AllowHits), movementSettings.HitDelay);
         }
     }
     void AllowHits() => canGetHit = true;
