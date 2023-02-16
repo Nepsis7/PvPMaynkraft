@@ -4,16 +4,24 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Player : NetworkBehaviour
 {
+    #region Fields
+    #region Serialized
     [SerializeField] float deathHeight = -1f;
     [SerializeField] float speed = 2f;
     [SerializeField] Vector2 sensitivity = new Vector2(2f, 2f);
     [SerializeField] Vector2 camPitchMinMax = new Vector2(-70, 85);
     [SerializeField] Transform camSocket = null;
+    #endregion Serialized
+    #region Syncronized
     NetworkVariable<Vector3> syncedPosition = new NetworkVariable<Vector3>(Vector3.zero);
     NetworkVariable<float> syncedYaw = new NetworkVariable<float>(0f);
+    #endregion Syncronized
     Rigidbody rb = null;
     float camPitch = 0f;
     Camera cam = null;
+    #endregion Fields
+    #region Methods
+    #region UnityStuff
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -25,14 +33,6 @@ public class Player : NetworkBehaviour
             RespawnClient(false);
             InitCam();
         }
-    }
-    void InitCam()
-    {
-        cam = Camera.main;
-        if (camSocket)
-            cam.transform.position = transform.position;
-        cam.transform.parent = transform;
-        cam.transform.rotation = transform.rotation;
     }
     void Update()
     {
@@ -47,6 +47,23 @@ public class Player : NetworkBehaviour
             transform.position = syncedPosition.Value;
             transform.eulerAngles = Vector3.up * syncedYaw.Value;
         }
+    }
+    #endregion UnityStuff
+    #region LocalPlayer
+    void SetPositionIfLocalPlayer(Vector3 _position)
+    {
+        if (!IsLocalPlayer)
+            return;
+        transform.position = _position;
+        RefreshPositionServerRpc(_position);
+    }
+    void InitCam()
+    {
+        cam = Camera.main;
+        if (camSocket)
+            cam.transform.position = transform.position;
+        cam.transform.parent = transform;
+        cam.transform.rotation = transform.rotation;
     }
     void HandleCamClient() //cam position, rotation & player rotation
     {
@@ -77,6 +94,8 @@ public class Player : NetworkBehaviour
         if (_addFall)
             AddFallServerRpc();
     }
+    #endregion LocalPlayer
+    #region ServerRpc
     [ServerRpc]
     void RefreshPositionServerRpc(Vector3 _position)
     {
@@ -91,4 +110,6 @@ public class Player : NetworkBehaviour
 
     }
     [ServerRpc] void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(NetworkObjectId);
+    #endregion ServerRpc
+    #endregion Methods
 }
