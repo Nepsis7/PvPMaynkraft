@@ -251,6 +251,7 @@ MonoBehaviour:
   kbMultipliers:
     vertical: 1
     horizontal: 1
+  hitDelay: 1
 --- !u!1 &6396603359572571646
 GameObject:
   m_ObjectHideFlags: 0
