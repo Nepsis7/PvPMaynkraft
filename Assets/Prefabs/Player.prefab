@@ -232,6 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathHeight: -1
   speed: 2
+  inAirSpeedFactor: 0.5
   sensitivity: {x: 2, y: 2}
   camPitchMinMax: {x: -70, y: 85}
   camSocket: {fileID: 3244101407012667378}
@@ -241,6 +242,8 @@ MonoBehaviour:
     strafeAxis: Horizontal
     yawAxis: Mouse X
     pitchAxis: Mouse Y
+  isGroundedRayCastHeightOffset: -0.98
+  isGroundedRayCastLength: 0.04
 --- !u!1 &6396603359572571646
 GameObject:
   m_ObjectHideFlags: 0

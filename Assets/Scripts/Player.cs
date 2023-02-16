@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
 using SF = UnityEngine.SerializeField;
@@ -18,6 +19,8 @@ class PlayerInputSettings
     public string PitchAxis => pitchAxis;
 }
 
+
+
 [RequireComponent(typeof(Rigidbody))]
 public class Player : NetworkBehaviour
 {
@@ -25,10 +28,14 @@ public class Player : NetworkBehaviour
     #region Serialized
     [SF] float deathHeight = -1f;
     [SF] float speed = 2f;
+    [SF] float inAirSpeedFactor = .5f;
     [SF] Vector2 sensitivity = new Vector2(2f, 2f);
     [SF] Vector2 camPitchMinMax = new Vector2(-70, 85);
     [SF] Transform camSocket = null;
     [SF] PlayerInputSettings inputSettings = new PlayerInputSettings();
+    [SF, Header("A/Hit Raycast")] float oui = -.98f;
+    [SF, Header("Advanced")] float isGroundedRayCastHeightOffset = -.98f;
+    [SF] float isGroundedRayCastLength = .04f;
     #endregion Serialized
     #region Syncronized
     NetworkVariable<Vector3> syncedPosition = new NetworkVariable<Vector3>(Vector3.zero);
@@ -37,6 +44,7 @@ public class Player : NetworkBehaviour
     Rigidbody rb = null;
     float camPitch = 0f;
     Camera cam = null;
+    bool isGrounded = true;
     #endregion Fields
     #region Methods
     #region UnityStuff
@@ -56,9 +64,10 @@ public class Player : NetworkBehaviour
     {
         if (IsLocalPlayer)
         {
-            MoveClient();
-            CheckDeathClient();
-            HandleCamClient();
+            RefreshIsGrounded();
+            Move();
+            CheckDeath();
+            HandleCam();
         }
         else if (IsClient)
         {
@@ -68,6 +77,11 @@ public class Player : NetworkBehaviour
     }
     #endregion UnityStuff
     #region LocalPlayer
+    public void AddForceIfLocalPlayer(Vector3 _force)
+    {
+        if (IsLocalPlayer)
+            rb.AddForce(_force, ForceMode.Impulse);
+    }
     public void SetPositionIfLocalPlayer(Vector3 _position)
     {
         if (!IsLocalPlayer)
@@ -83,7 +97,7 @@ public class Player : NetworkBehaviour
         cam.transform.parent = transform;
         cam.transform.rotation = transform.rotation;
     }
-    void HandleCamClient() //cam position, rotation & player rotation
+    void HandleCam() //cam position, cam rotation & player rotation
     {
         transform.eulerAngles += Vector3.up * Input.GetAxis(inputSettings.YawAxis) * sensitivity.x;
         Camera _cam = Camera.main;
@@ -94,12 +108,12 @@ public class Player : NetworkBehaviour
         _cam.transform.localEulerAngles = Vector3.right * camPitch;
         RefreshRotationServerRpc(transform.eulerAngles.y);
     }
-    void MoveClient()
+    void Move()
     {
-        rb.position += Time.deltaTime * speed * (transform.forward * Input.GetAxis(inputSettings.ForwardAxis) + transform.right * Input.GetAxis(inputSettings.StrafeAxis));
+        rb.position += Time.deltaTime * speed * (isGrounded ? 1 : inAirSpeedFactor) * (transform.forward * Input.GetAxis(inputSettings.ForwardAxis) + transform.right * Input.GetAxis(inputSettings.StrafeAxis));
         RefreshPositionServerRpc(transform.position);
     }
-    void CheckDeathClient()
+    void CheckDeath()
     {
         if (transform.position.y <= deathHeight)
             RespawnClient();
@@ -112,6 +126,7 @@ public class Player : NetworkBehaviour
         if (_addFall)
             AddFallServerRpc();
     }
+    void RefreshIsGrounded() => isGrounded = Physics.Raycast(transform.position + Vector3.up * isGroundedRayCastHeightOffset, -Vector3.up, isGroundedRayCastLength, ~gameObject.layer);
     #endregion LocalPlayer
     #region ServerRpc
     [ServerRpc]
