@@ -7,43 +7,69 @@ using Unity.Netcode.Transports.UTP;
 [RequireComponent(typeof(NetworkManager), typeof(UnityTransport))]
 public class MenuGUI : MonoBehaviour
 {
-    NetworkManager nm = null;
+    NetworkManager netman = null;
     UnityTransport transport = null;
-    bool started = false;
+    string username = "Michel";
     private void Start()
     {
-        nm = GetComponent<NetworkManager>();
+        netman = GetComponent<NetworkManager>();
         transport = GetComponent<UnityTransport>();
     }
     private void OnGUI()
     {
-        if (started)
-            return;
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("IP");
-        transport.ConnectionData.Address = GUILayout.TextField(transport.ConnectionData.Address);
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Server Listen IP");
-        transport.ConnectionData.ServerListenAddress = GUILayout.TextField(transport.ConnectionData.ServerListenAddress);
-        GUILayout.EndHorizontal();
-
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("Port");
-        bool _success = ushort.TryParse(GUILayout.TextField(transport.ConnectionData.Port.ToString()), out ushort _result);
-        if (_success)
-            transport.ConnectionData.Port = _result;
-        GUILayout.EndHorizontal();
-        if(GUILayout.Button("Start Client"))
+        //IP
         {
-            nm.StartClient();
-            started = true;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("IP");
+            transport.ConnectionData.Address = GUILayout.TextField(transport.ConnectionData.Address);
+            GUILayout.EndHorizontal();
         }
-        else if (GUILayout.Button("Start Server"))
+
+        //Server Listen IP
         {
-            nm.StartServer();
-            started = true;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Server Listen IP");
+            transport.ConnectionData.ServerListenAddress = GUILayout.TextField(transport.ConnectionData.ServerListenAddress);
+            GUILayout.EndHorizontal();
         }
+
+        //Port
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Port");
+            bool _success = ushort.TryParse(GUILayout.TextField(transport.ConnectionData.Port.ToString()), out ushort _result);
+            if (_success)
+                transport.ConnectionData.Port = _result;
+            GUILayout.EndHorizontal();
+        }
+
+        //Username
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Username");
+            username = GUILayout.TextField(username);
+            GUILayout.EndHorizontal();
+        }
+
+        //Buttons
+        {
+            if (!string.IsNullOrWhiteSpace(username) && !username.Contains('|') && GUILayout.Button("Start Client"))
+            {
+                netman.StartClient();
+                netman.OnClientConnectedCallback += ntm;
+                Destroy(this);
+            }
+            if (GUILayout.Button("Start Server"))
+            {
+                netman.StartServer();
+                Destroy(this);
+            }
+        }
+    }
+    void ntm(ulong _shlong)
+    {
+        Debug.Log("MANGE BIEN TES MORTS");
+        UsernameManager.Instance?.RegisterUsername(username);
+        netman.OnClientConnectedCallback -= ntm;
     }
 }
