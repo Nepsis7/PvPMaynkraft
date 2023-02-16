@@ -13,7 +13,7 @@ public class Player : NetworkBehaviour
     }
     private void Start()
     {
-        if (IsClient)
+        if (IsLocalPlayer)
             RespawnClient(false);
     }
     void Update()
