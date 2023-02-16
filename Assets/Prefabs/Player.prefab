@@ -242,8 +242,15 @@ MonoBehaviour:
     strafeAxis: Horizontal
     yawAxis: Mouse X
     pitchAxis: Mouse Y
-  isGroundedRayCastHeightOffset: -0.98
-  isGroundedRayCastLength: 0.04
+  isGroundedRayCastSettings:
+    heightOffset: -0.98
+    length: 0.04
+  hitRayCastSettings:
+    forwardOffset: 0.4
+    length: 2.6
+  kbMultipliers:
+    vertical: 1
+    horizontal: 1
 --- !u!1 &6396603359572571646
 GameObject:
   m_ObjectHideFlags: 0
