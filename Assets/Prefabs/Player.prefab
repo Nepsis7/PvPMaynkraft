@@ -231,15 +231,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathHeight: -1
-  speed: 2
-  inAirSpeedFactor: 0.5
-  sensitivity: {x: 2, y: 2}
-  camPitchMinMax: {x: -70, y: 85}
   camSocket: {fileID: 3244101407012667378}
+  movementSettings:
+    speed: 5
+    inAirSpeedFactor: 0.5
+    sprintSpeedFactor: 2
+    jumpForce: 10
+    sensitivity: {x: 2, y: 2}
+    camPitchMinMax: {x: -70, y: 90}
+    hitDelay: 1
+    jumpDelay: 0.5
+    kbMultipliers:
+      vertical: 1
+      horizontal: 1
   inputSettings:
-    hitKey: 323
     forwardAxis: Vertical
     strafeAxis: Horizontal
+    jumpAxis: Jump
+    sprintAxis: Sprint
+    hitAxis: Fire1
     yawAxis: Mouse X
     pitchAxis: Mouse Y
   isGroundedRayCastSettings:
@@ -248,10 +258,6 @@ MonoBehaviour:
   hitRayCastSettings:
     forwardOffset: 0.4
     length: 2.6
-  kbMultipliers:
-    vertical: 1
-    horizontal: 1
-  hitDelay: 1
 --- !u!1 &6396603359572571646
 GameObject:
   m_ObjectHideFlags: 0
