@@ -36,19 +36,16 @@ public partial class Player : NetworkBehaviour
     }
     void Move()
     {
-        rb.position +=
-            Time.deltaTime * //dt
-            movementSettings.Speed * //speed
-            Move_InAirFactor * //slower if in the air
-            Move_SprintingFactor * //faster if sprinting
-            Move_FS; //move direction and distance
+        rb.position += Time.deltaTime * Move_Direction * Move_Speed;
         TryJump();
         RefreshPositionServerRpc(transform.position);
     }
     #region Move() subAccessors
+    float Move_Speed => movementSettings.Speed * Move_TotalSpeedFactor;
+    float Move_TotalSpeedFactor => Move_InAirFactor * Move_SprintingFactor;
     float Move_InAirFactor => isGrounded ? 1 : movementSettings.InAirSpeedFactor;
     float Move_SprintingFactor => Input.GetAxis(inputSettings.SprintAxis) > 0 ? movementSettings.SprintSpeedFactor : 1;
-    Vector3 Move_FS => Move_Forward + Move_Strafe;
+    Vector3 Move_Direction => (Move_Forward + Move_Strafe).normalized;
     Vector3 Move_Forward => transform.forward * Input.GetAxis(inputSettings.ForwardAxis);
     Vector3 Move_Strafe => transform.right * Input.GetAxis(inputSettings.StrafeAxis);
     #endregion Move() subAccessors
