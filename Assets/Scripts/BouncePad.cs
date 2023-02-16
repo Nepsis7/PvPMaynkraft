@@ -15,7 +15,6 @@ public class BouncePad : MonoBehaviour
         Player _player = _collider.GetComponent<Player>();
         if (!_player && !settings)
             return;
-        print("test");
         _player.AddForceIfLocalPlayer(settings.Direction);
         OnPlayerEnter?.Invoke();
     }
