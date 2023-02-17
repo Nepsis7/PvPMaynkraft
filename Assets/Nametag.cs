@@ -5,26 +5,24 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(TMP_Text))]
-public class Nametag : NetworkBehaviour
+public class Nametag : MonoBehaviour
 {
+    [SerializeField] Player player = null;
+    TMP_Text text = null;
     void Start()
     {
-        UsernameManager _um = UsernameManager.Instance;
-        if (IsLocalPlayer && _um)
-            _um.OnUsernameSet += SetUsernameServerRpc;
+        text = GetComponent<TMP_Text>();
+        if (player)
+        {
+            text.text = player.Username.ToString();
+            player.OnUsernameChanged += (_username) => text.text = _username.ToString();
+        }
     }
     private void Update()
     {
+        if (!transform.parent)
+            return;
         Vector3 _lookAt = Quaternion.LookRotation(transform.position - Camera.main.transform.position, Vector3.up).eulerAngles;
-        if (transform.parent)
-            transform.parent.eulerAngles = Vector3.up * _lookAt.y;
+        transform.parent.eulerAngles = Vector3.up * _lookAt.y;
     }
-    void SetUsername(string _username) => GetComponent<TMP_Text>().text = _username;
-    [ServerRpc]
-    void SetUsernameServerRpc(string _username)
-    {
-        SetUsername(_username);
-        SetUsernameClientRpc(_username);
-    }
-    [ClientRpc] void SetUsernameClientRpc(string _username) => SetUsername(_username);
 }

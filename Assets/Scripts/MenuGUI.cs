@@ -53,7 +53,7 @@ public class MenuGUI : MonoBehaviour
 
         //Buttons
         {
-            if (!string.IsNullOrWhiteSpace(username) && !username.Contains(UsernameManager.USERNAME_SEPARATOR) && GUILayout.Button("Start Client"))
+            if (!string.IsNullOrWhiteSpace(username) && GUILayout.Button("Start Client"))
             {
                 netman.OnClientConnectedCallback += RegisterOnCallback;
                 netman.StartClient();
@@ -68,7 +68,8 @@ public class MenuGUI : MonoBehaviour
     }
     void RegisterOnCallback(ulong _shlong)
     {
-        UsernameManager.Instance?.RegisterUsername(username);
+        Debug.Log($"Connected. Setting username to [{username}]");
+        netman.SpawnManager.GetLocalPlayerObject().GetComponent<Player>().SetUsernameIfLocalPlayer(username);
         netman.OnClientConnectedCallback -= RegisterOnCallback;
     }
 }
