@@ -20,6 +20,11 @@ public partial class Player : NetworkBehaviour
         if (IsLocalPlayer)
             SetUsernameServerRpc(_username);
     }
+    public void AddBonusIfLocalPlayer(PlayerBonusType _type, float _multiplier, float _duration)
+    {
+        bonusMultipliers.Set(_type, _multiplier);
+        bonusMultipliers.ResetAfterDuration(_type, _duration, this);
+    }
     void InitCam()
     {
         cam = Camera.main;
@@ -46,10 +51,10 @@ public partial class Player : NetworkBehaviour
         RefreshPositionServerRpc(transform.position);
     }
     #region Move() subAccessors
-    float Move_Speed => movementSettings.Speed * Move_TotalSpeedFactor;
-    float Move_TotalSpeedFactor => Move_InAirFactor * Move_SprintingFactor;
-    float Move_InAirFactor => isGrounded ? 1 : movementSettings.InAirSpeedFactor;
-    float Move_SprintingFactor => Input.GetAxis(inputSettings.SprintAxis) > 0 ? movementSettings.SprintSpeedFactor : 1;
+    float Move_Speed => movementSettings.Speed * Move_TotalSpeedMultiplier;
+    float Move_TotalSpeedMultiplier => Move_InAirMultiplier * Move_SprintingMultiplier * bonusMultipliers.Speed;
+    float Move_InAirMultiplier => isGrounded ? 1 : movementSettings.InAirSpeedMultiplier;
+    float Move_SprintingMultiplier => Input.GetAxis(inputSettings.SprintAxis) > 0 ? movementSettings.SprintSpeedMultiplier : 1;
     Vector3 Move_Direction => (Move_Forward + Move_Strafe).normalized;
     Vector3 Move_Forward => transform.forward * Input.GetAxis(inputSettings.ForwardAxis);
     Vector3 Move_Strafe => transform.right * Input.GetAxis(inputSettings.StrafeAxis);

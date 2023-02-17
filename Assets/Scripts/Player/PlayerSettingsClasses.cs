@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using SF = UnityEngine.SerializeField;
 
@@ -52,8 +53,8 @@ class KnockBackMultipliers
 class PlayerMovementSettings
 {
     [SF] float speed = 2f;
-    [SF] float inAirSpeedFactor = .5f;
-    [SF] float sprintSpeedFactor = 2f;
+    [SF] float inAirSpeedMultiplier = .5f;
+    [SF] float sprintSpeedMultiplier = 2f;
     [SF] float jumpForce = 5f;
     [SF] Vector2 sensitivity = new(2f, 2f);
     [SF] Vector2 camPitchMinMax = new(-70, 90);
@@ -61,12 +62,58 @@ class PlayerMovementSettings
     [SF] float jumpDelay = .5f;
     [SF] KnockBackMultipliers kbMultipliers = new();
     public float Speed => speed;
-    public float InAirSpeedFactor => inAirSpeedFactor;
-    public float SprintSpeedFactor => sprintSpeedFactor;
+    public float InAirSpeedMultiplier => inAirSpeedMultiplier;
+    public float SprintSpeedMultiplier => sprintSpeedMultiplier;
     public float JumpForce => jumpForce;
     public Vector2 Sensitivity => sensitivity;
     public Vector2 CamPitchMinMax => camPitchMinMax;
     public float HitDelay => hitDelay;
     public float JumpDelay => jumpDelay;
     public KnockBackMultipliers KbMultipliers => kbMultipliers;
+}
+
+class BonusMultipliers
+{
+    public float Force = 0f;
+    public float Speed = 0f;
+    public float JumpForce = 0f;
+    public float Get(PlayerBonusType _type)
+    {
+        switch (_type)
+        {
+            case PlayerBonusType.Force:
+                return Force;
+            case PlayerBonusType.Speed:
+                return Speed;
+            case PlayerBonusType.JumpForce:
+                return JumpForce;
+        }
+        return 0f; //c# il est con
+    }
+    public float Set(PlayerBonusType _type, float _value)
+    {
+        switch (_type)
+        {
+            case PlayerBonusType.Force:
+                return (Force = _value);
+            case PlayerBonusType.Speed:
+                return Speed = _value;
+            case PlayerBonusType.JumpForce:
+                return JumpForce = _value;
+        }
+        return 0f; //c# il est toujours con
+    }
+    public void ResetAfterDuration(PlayerBonusType _type, float _duration, MonoBehaviour _coroutineHost) => _coroutineHost?.StartCoroutine(ResetCoroutine(_type, _duration));
+    IEnumerator ResetCoroutine(PlayerBonusType _type, float _duration)
+    {
+        yield return new WaitForSeconds(_duration);
+        Set(_type, 0);
+    }
+}
+
+public enum PlayerBonusType
+{
+    Force,
+    Speed,
+    JumpForce,
 }

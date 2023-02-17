@@ -32,6 +32,7 @@ public partial class Player : NetworkBehaviour
     bool isGrounded = true;
     bool canGetHit = true;
     bool canJump = true;
+    BonusMultipliers bonusMultipliers = new();
     #endregion Rest
     #endregion Fields
     #region Accessors
