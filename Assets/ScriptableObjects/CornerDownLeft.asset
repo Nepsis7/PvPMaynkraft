@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0f670cf6d28b549afb8ece9f970d59, type: 3}
   m_Name: CornerDownLeft
   m_EditorClassIdentifier: 
-  speedBound: 1
-  xDir: 1
+  speedBound: 1.5
+  xDir: 0.78
   yDir: 1
   zDir: 1

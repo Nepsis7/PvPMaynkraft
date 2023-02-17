@@ -103,9 +103,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4785064307115074590}
     m_Modifications:
+    - target: {fileID: 1000446506099500, guid: 4b8c8a29851cff347abb15e786b37ba6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1377676392002270, guid: 4b8c8a29851cff347abb15e786b37ba6, type: 3}
       propertyPath: m_Name
       value: Floor_gummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529216716482222, guid: 4b8c8a29851cff347abb15e786b37ba6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1988829745290254, guid: 4b8c8a29851cff347abb15e786b37ba6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4367953918907490, guid: 4b8c8a29851cff347abb15e786b37ba6, type: 3}
       propertyPath: m_RootOrder
