@@ -483,7 +483,7 @@ MonoBehaviour:
   deathHeight: -1
   camSocket: {fileID: 3244101407012667378}
   movementSettings:
-    speed: 2
+    speed: 5
     inAirSpeedFactor: 0.5
     sprintSpeedFactor: 2
     jumpForce: 5
