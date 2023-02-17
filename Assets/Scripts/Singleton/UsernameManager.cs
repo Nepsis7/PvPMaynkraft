@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class UsernameManager : NetworkSingleton<UsernameManager>
 {
+    public const char USERNAME_SEPARATOR = '|';
     public event Action<string> OnUsernameSet = null;
     string registeredUsernames = "";
     string username = "Michel";
@@ -25,7 +26,7 @@ public class UsernameManager : NetworkSingleton<UsernameManager>
             yield return null;
         username = _username;
         int _n = 2;
-        while (registeredUsernames.Contains(username))
+        while (registeredUsernames.Split(USERNAME_SEPARATOR).Contains(username))
         {
             username = _username + _n.ToString();
             _n++;
@@ -39,7 +40,7 @@ public class UsernameManager : NetworkSingleton<UsernameManager>
         if (string.IsNullOrEmpty(registeredUsernames))
             registeredUsernames = _username;
         else
-            registeredUsernames += '|' + username;
+            registeredUsernames += USERNAME_SEPARATOR + username;
     }
     [ServerRpc(Delivery = RpcDelivery.Reliable, RequireOwnership = false)]
     void RequestUsernamesRefreshServerRpc()

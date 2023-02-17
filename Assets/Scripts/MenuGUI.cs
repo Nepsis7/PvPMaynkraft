@@ -53,10 +53,10 @@ public class MenuGUI : MonoBehaviour
 
         //Buttons
         {
-            if (!string.IsNullOrWhiteSpace(username) && !username.Contains('|') && GUILayout.Button("Start Client"))
+            if (!string.IsNullOrWhiteSpace(username) && !username.Contains(UsernameManager.USERNAME_SEPARATOR) && GUILayout.Button("Start Client"))
             {
+                netman.OnClientConnectedCallback += RegisterOnCallback;
                 netman.StartClient();
-                netman.OnClientConnectedCallback += ntm;
                 Destroy(this);
             }
             if (GUILayout.Button("Start Server"))
@@ -66,10 +66,9 @@ public class MenuGUI : MonoBehaviour
             }
         }
     }
-    void ntm(ulong _shlong)
+    void RegisterOnCallback(ulong _shlong)
     {
-        Debug.Log("MANGE BIEN TES MORTS");
         UsernameManager.Instance?.RegisterUsername(username);
-        netman.OnClientConnectedCallback -= ntm;
+        netman.OnClientConnectedCallback -= RegisterOnCallback;
     }
 }
