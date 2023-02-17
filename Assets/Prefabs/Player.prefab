@@ -489,11 +489,11 @@ MonoBehaviour:
     jumpForce: 5
     sensitivity: {x: 2, y: 2}
     camPitchMinMax: {x: -70, y: 90}
-    hitDelay: 1
+    hitDelay: 0.5
     jumpDelay: 0.5
     kbMultipliers:
       vertical: 1
-      horizontal: 1
+      horizontal: 3
   inputSettings:
     forwardAxis: Vertical
     strafeAxis: Horizontal
