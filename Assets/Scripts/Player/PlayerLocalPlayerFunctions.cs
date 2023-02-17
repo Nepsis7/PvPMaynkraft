@@ -85,7 +85,7 @@ public partial class Player : NetworkBehaviour
             return;
         Vector3 _kbDir = cam.transform.forward;
         _kbDir.y = 1;
-        HitPlayerServerRpc(_hitPlayer.NetworkObjectId, _kbDir.normalized);
+        HitPlayerServerRpc(_hitPlayer.PlayerID, _kbDir.normalized);
     }
     void RefreshIsGrounded() => isGrounded = Physics.Raycast(transform.position + Vector3.up * isGroundedRayCastSettings.HeightOffset, -Vector3.up, isGroundedRayCastSettings.Length, ~gameObject.layer);
 }

@@ -15,6 +15,6 @@ public partial class Player : NetworkBehaviour
         transform.eulerAngles = Vector3.up * _yaw;
         syncedYaw.Value = _yaw;
     }
-    [ServerRpc] void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(NetworkBehaviourId);
-    [ServerRpc] void HitPlayerServerRpc(ulong _playerID, Vector3 _dirNormalized) => NetworkManager.SpawnManager.SpawnedObjects[_playerID].GetComponent<Player>().KnockBackIfLocalPlayerClientRpc(_dirNormalized);
+    [ServerRpc] void AddFallServerRpc() => DeathBoard.Instance?.AddFallServer(PlayerID);
+    [ServerRpc] void HitPlayerServerRpc(ulong _playerID, Vector3 _dirNormalized) => PlayerManager.Instance?[_playerID].KnockBackIfLocalPlayerClientRpc(_dirNormalized);
 }
