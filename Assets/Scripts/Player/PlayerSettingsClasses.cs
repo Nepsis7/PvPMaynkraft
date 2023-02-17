@@ -74,9 +74,9 @@ class PlayerMovementSettings
 
 class BonusMultipliers
 {
-    public float Force = 0f;
-    public float Speed = 0f;
-    public float JumpForce = 0f;
+    public float Force = 1f;
+    public float Speed = 1f;
+    public float JumpForce = 1f;
     public float Get(PlayerBonusType _type)
     {
         switch (_type)
@@ -107,7 +107,7 @@ class BonusMultipliers
     IEnumerator ResetCoroutine(PlayerBonusType _type, float _duration)
     {
         yield return new WaitForSeconds(_duration);
-        Set(_type, 0);
+        Set(_type, 1);
     }
 }
 
