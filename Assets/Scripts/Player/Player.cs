@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using SF = UnityEngine.SerializeField;
@@ -6,6 +7,9 @@ using SF = UnityEngine.SerializeField;
 [RequireComponent(typeof(Rigidbody))]
 public partial class Player : NetworkBehaviour
 {
+    #region Events
+    public event Action<FixedString32Bytes> OnUsernameChanged = null;
+    #endregion Events
     #region Fields
     #region Serialized
     [SF] float deathHeight = -1f;
@@ -19,6 +23,7 @@ public partial class Player : NetworkBehaviour
     NetworkVariable<Vector3> syncedPosition = new(Vector3.zero);
     NetworkVariable<float> syncedYaw = new(0f);
     NetworkVariable<ulong> syncedPlayerID = new(0ul);
+    NetworkVariable<FixedString32Bytes> username = new("");
     #endregion Syncronized
     #region Rest
     Rigidbody rb = null;
@@ -31,6 +36,7 @@ public partial class Player : NetworkBehaviour
     #endregion Fields
     #region Accessors
     public ulong PlayerID => syncedPlayerID.Value;
+    public FixedString32Bytes Username { get => username.Value; set => username.Value = value; }
     #endregion Accessors
     #region Methods
     private void Awake()
@@ -41,6 +47,7 @@ public partial class Player : NetworkBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        username.OnValueChanged += (_old, _new) => OnUsernameChanged.Invoke(_new);
         if (IsLocalPlayer)
         {
             Respawn(false);

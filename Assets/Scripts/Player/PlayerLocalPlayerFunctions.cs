@@ -15,6 +15,11 @@ public partial class Player : NetworkBehaviour
         transform.position = _position;
         RefreshPositionServerRpc(_position);
     }
+    public void SetUsernameIfLocalPlayer(string _username)
+    {
+        if (IsLocalPlayer)
+            SetUsernameServerRpc(_username);
+    }
     void InitCam()
     {
         cam = Camera.main;
@@ -36,7 +41,7 @@ public partial class Player : NetworkBehaviour
     }
     void Move()
     {
-        rb.position += Time.deltaTime * Move_Direction * Move_Speed;
+        rb.position += Move_Speed * Time.deltaTime * Move_Direction;
         TryJump();
         RefreshPositionServerRpc(transform.position);
     }
