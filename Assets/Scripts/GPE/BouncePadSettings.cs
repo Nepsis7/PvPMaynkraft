@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "BouncepadDefault", menuName = "BouncePad")]
+[CreateAssetMenu(fileName = "BouncepadDefault", menuName = "GPE/BouncePad")]
 public class BouncePadSettings : ScriptableObject
 {
     [SerializeField,Range(0,5)] float speedBound = 1;

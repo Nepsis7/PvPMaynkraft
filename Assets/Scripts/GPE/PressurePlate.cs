@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(BoxCollider), typeof(NetworkObject))]
 public class PressurePlate : NetworkBehaviour
@@ -17,21 +15,26 @@ public class PressurePlate : NetworkBehaviour
 
     NetworkVariable<Vector3> syncPosition = new();
     NetworkVariable<Quaternion> syncRotation = new();
+    NetworkVariable<Vector3> syncVelocity = new();
     private void Start()
     {
         Init();
     }
     private void Update()
     {
+        if (rb.isKinematic)
+            return;
         if (IsClient)
         {
             door.position = syncPosition.Value;
             door.rotation = syncRotation.Value;
+            rb.velocity = syncVelocity.Value;
         }
         else
         {
             syncPosition.Value = door.position;
             syncRotation.Value = door.rotation;
+            syncVelocity.Value = rb.velocity;
         }
     }
     private void Init()
@@ -43,9 +46,9 @@ public class PressurePlate : NetworkBehaviour
             Invoke(nameof(OpenDoor), timeOpenDoor);
         };
     }
-    private void OnTriggerExit(Collider _collier)
+    private void OnTriggerExit(Collider _collider)
     {
-        if (IsClient || (1 << _collier.gameObject.layer) != playerMask)
+        if ((1 << _collider.gameObject.layer) != playerMask)
             return;
         OnPlayerExit?.Invoke();
     }
