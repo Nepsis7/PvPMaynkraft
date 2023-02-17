@@ -14,6 +14,6 @@ public class BonusSettings : ScriptableObject
     public Color BonusColor => bonusColor;
     public void BonusBehaviour(Player _player)
     {
-        _player.AddBonusIfLocalPlayer(type, multPercent / 100f, timeBonus);
+        _player.AddBonusIfLocalPlayer(type,(1 + multPercent / 100f), timeBonus);
     }
 }

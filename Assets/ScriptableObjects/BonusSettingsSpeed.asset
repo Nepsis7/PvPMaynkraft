@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BonusSettingsSpeed
   m_EditorClassIdentifier: 
   multPercent: 50
-  timeBonus: 1
+  timeBonus: 5
   timeRespawnBonus: 5
   type: 1
   bonusColor: {r: 0, g: 1, b: 1, a: 1}
